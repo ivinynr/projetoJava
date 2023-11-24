@@ -1,0 +1,23 @@
+import java.util.List;
+
+public class RedeSocialApp {
+    public static void main(String[] args) {
+        RedeSocialDAO dao = new RedeSocialDAO();
+
+
+        Usuario usuario1 = new Usuario("Usuario1");
+        Usuario usuario2 = new Usuario("Usuario2");
+
+        dao.adicionarUsuario(usuario1);
+        dao.adicionarUsuario(usuario2);
+
+
+        List<Usuario> usuarios = dao.listarUsuarios();
+        for (Usuario usuario : usuarios) {
+            System.out.println("ID: " + usuario.getId() + ", Nome: " + usuario.getNome());
+        }
+
+
+        dao.fecharConexao();
+    }
+}
