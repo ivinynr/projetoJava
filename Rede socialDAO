@@ -1,0 +1,69 @@
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+public class RedeSocialDAO {
+    private Connection connection;
+
+    public RedeSocialDAO() {
+        try {
+
+            String url = "jdbc:sqlite:";
+            connection = DriverManager.getConnection(url);
+
+
+            String createTableQuery = "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT);";
+            Statement statement = connection.createStatement();
+            statement.execute(createTableQuery);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void adicionarUsuario(Usuario usuario) {
+        try {
+            String insertQuery = "INSERT INTO usuarios (nome) VALUES (?)";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setString(1, usuario.getNome());
+                preparedStatement.executeUpdate();
+
+                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    usuario.setId(generatedKeys.getInt(1));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Usuario> listarUsuarios() {
+        List<Usuario> usuarios = new ArrayList<>();
+        try {
+            String selectQuery = "SELECT * FROM usuarios";
+            try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(selectQuery)) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String nome = resultSet.getString("nome");
+                    Usuario usuario = new Usuario(nome);
+                    usuario.setId(id);
+                    usuarios.add(usuario);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return usuarios;
+    }
+
+    public void fecharConexao() {
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
