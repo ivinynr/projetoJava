@@ -1,0 +1,23 @@
+//* Usuario 
+
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Usuario {
+        private int id;
+        private String nome;
+
+        public Usuario(String nome) {
+            this.nome = nome;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getNome() {
+            return nome;
+        }
+    }
